@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cartlabs-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cartlabs
+      POSTGRES_USER: cartlabs
+      POSTGRES_PASSWORD: cartlabs_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cartlabs -d cartlabs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: cartlabs-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://cartlabs:cartlabs_password@db:5432/cartlabs
+      JWT_SECRET_KEY: change-this-secret-in-production
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+      FRONTEND_ORIGIN: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: cartlabs-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

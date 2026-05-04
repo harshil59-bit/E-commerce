@@ -1,0 +1,25 @@
+.venv/
+.venv-*/
+backend/.venv/
+backend/.venv-*/
+backend/*.db
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+.DS_Store
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Env files
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
