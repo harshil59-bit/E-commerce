@@ -28,7 +28,10 @@ services:
       - monitoring-net
 
   frontend:
-    image: soham170905/cartlabs-frontend:latest
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
     container_name: cartlabs-frontend
     networks:
       - monitoring-net
@@ -37,7 +40,7 @@ services:
     image: nginx:alpine
     container_name: cartlabs-nginx
     ports:
-      - "80:80"   # 🔥 THIS IS REQUIRED
+      - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
