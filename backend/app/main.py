@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
@@ -10,18 +9,13 @@ from app.seed import seed_products
 
 app = FastAPI(title="CartLabs API", version="1.0.0")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[settings.frontend_origin, "http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(_: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse(status_code=500, content={"detail": "Internal server error", "error": str(exc)})
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error", "error": str(exc)},
+    )
 
 
 @app.exception_handler(RequestValidationError)
@@ -31,7 +25,10 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError) 
         location = ".".join(str(part) for part in error.get("loc", []) if part != "body")
         prefix = f"{location}: " if location else ""
         messages.append(f"{prefix}{error.get('msg', 'Invalid value')}")
-    return JSONResponse(status_code=422, content={"detail": "; ".join(messages) or "Invalid request"})
+    return JSONResponse(
+        status_code=422,
+        content={"detail": "; ".join(messages) or "Invalid request"},
+    )
 
 
 @app.on_event("startup")
