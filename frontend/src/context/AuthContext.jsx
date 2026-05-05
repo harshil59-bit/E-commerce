@@ -4,11 +4,8 @@ import api from "../services/api";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("cartlabs_user");
-    return stored ? JSON.parse(stored) : null;
-  });
-  const [loading, setLoading] = useState(Boolean(localStorage.getItem("cartlabs_token")));
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const persistSession = (data) => {
     localStorage.setItem("cartlabs_token", data.access_token);
@@ -35,11 +32,14 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    const refreshUser = async () => {
-      if (!localStorage.getItem("cartlabs_token")) {
+    const initAuth = async () => {
+      const token = localStorage.getItem("cartlabs_token");
+
+      if (!token) {
         setLoading(false);
         return;
       }
+
       try {
         const { data } = await api.get("/auth/me");
         localStorage.setItem("cartlabs_user", JSON.stringify(data));
@@ -50,10 +50,22 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }
     };
-    refreshUser();
+
+    initAuth();
   }, [logout]);
 
-  const value = useMemo(() => ({ user, loading, login, register, logout, isAuthenticated: Boolean(user) }), [user, loading, login, register, logout]);
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      register,
+      logout,
+      isAuthenticated: Boolean(user),
+    }),
+    [user, loading, login, register, logout]
+  );
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
