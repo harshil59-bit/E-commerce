@@ -13,14 +13,21 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Protected routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<ProductListPage />} />
+        <Route path="/products" element={<ProductListPage />} />
         <Route path="/products/:id" element={<ProductDetailsPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/orders/:id" element={<OrderTrackingPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+
+      {/* Redirect root */}
+      <Route path="/" element={<Navigate to="/products" replace />} />
+
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/products" replace />} />
     </Routes>
   );
 }

@@ -24,7 +24,7 @@ export default function LoginPage() {
 
       // 🔥 IMPORTANT FIX (wait for state update)
       setTimeout(() => {
-        navigate("/", { replace: true });
+        navigate("/products", { replace: true });
       }, 0);
 
     } catch (error) {

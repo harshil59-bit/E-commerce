@@ -18,7 +18,7 @@ export default function RegisterPage() {
     try {
       await register(form);
       showToast("Account created");
-      navigate("/");
+      navigate("/products", { replace: true });
     } catch (error) {
       showToast(getErrorMessage(error, "Registration failed"), "error");
     } finally {
