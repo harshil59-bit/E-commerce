@@ -8,9 +8,11 @@ from app.routes import address, auth, cart, orders, products
 from app.seed import seed_products
 from prometheus_fastapi_instrumentator import Instrumentator
 
-Instrumentator().instrument(app).expose(app)
+
 
 app = FastAPI(title="CartLabs API", version="1.0.0")
+
+Instrumentator().instrument(app).expose(app)
 
 
 @app.exception_handler(Exception)
