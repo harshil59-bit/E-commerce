@@ -1,4 +1,7 @@
+version: "3.9"
+
 services:
+
   db:
     image: postgres:16-alpine
     container_name: cartlabs-db
@@ -9,9 +12,11 @@ services:
       POSTGRES_PASSWORD: cartlabs_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - monitoring-net
 
   backend:
-    image: soham170905/e-commerce-backend:latest 
+    image: soham170905/cartlabs-backend:latest
     container_name: cartlabs-backend
     restart: unless-stopped
     environment:
@@ -21,17 +26,22 @@ services:
       - "8000"
     depends_on:
       - db
+    networks:
+      - monitoring-net
 
   frontend:
-    image: soham170905/e-commerce-frontend:latest
+    image: soham170905/cartlabs-frontend:latest
     container_name: cartlabs-frontend
     restart: unless-stopped
     expose:
       - "80"
+    networks:
+      - monitoring-net
 
   nginx:
     image: nginx:alpine
     container_name: cartlabs-nginx
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
@@ -39,6 +49,13 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - monitoring-net
 
 volumes:
   postgres_data:
+
+# 🔥 SHARED NETWORK (critical for Prometheus)
+networks:
+  monitoring-net:
+    external: true

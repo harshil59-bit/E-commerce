@@ -18,8 +18,8 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh """
-                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest ./backend
-                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest ./frontend
+                docker build --no-cache -t ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest ./backend
+                docker build --no-cache -t ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest ./frontend
                 """
             }
         }
@@ -47,9 +47,7 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
                     cd E-commerce &&
-                    docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest &&
-                    docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest &&
-                    docker compose down &&
+                    docker compose pull &&
                     docker compose up -d
                     "
                     """
