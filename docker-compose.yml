@@ -11,7 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: soham170905/cartlabs-backend:latest 
+    image: soham170905/e-commerce-backend:latest 
     container_name: cartlabs-backend
     restart: unless-stopped
     environment:
@@ -23,7 +23,7 @@ services:
       - db
 
   frontend:
-    image: soham170905/cartlabs-frontend:latest
+    image: soham170905/e-commerce-frontend:latest
     container_name: cartlabs-frontend
     restart: unless-stopped
     expose:

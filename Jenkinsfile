@@ -4,7 +4,7 @@ pipeline {
     environment {
         EC2_IP = "15.206.179.251"
         DOCKERHUB_USER = "soham170905"
-        IMAGE_NAME = "cartlabs"
+        IMAGE_NAME = "e-commerce"
     }
 
     stages {
