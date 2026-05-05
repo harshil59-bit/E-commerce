@@ -11,9 +11,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 
 app = FastAPI(title="CartLabs API", version="1.0.0")
-
 Instrumentator().instrument(app).expose(app)
-
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(_: Request, exc: Exception) -> JSONResponse:

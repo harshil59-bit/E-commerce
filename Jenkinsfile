@@ -4,7 +4,7 @@ pipeline {
     environment {
         EC2_IP = "15.206.179.251"
         DOCKERHUB_USER = "soham170905"
-        IMAGE_NAME = "cartlabs"
+        IMAGE_NAME = "e-commerce"
     }
 
     stages {
@@ -18,8 +18,8 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh """
-                docker build --no-cache -t ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest ./backend
-                docker build --no-cache -t ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest ./frontend
+                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest ./backend
+                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest ./frontend
                 """
             }
         }
@@ -47,7 +47,9 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
                     cd E-commerce &&
-                    docker compose pull &&
+                    docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}-backend:latest &&
+                    docker pull ${DOCKERHUB_USER}/${IMAGE_NAME}-frontend:latest &&
+                    docker compose down &&
                     docker compose up -d
                     "
                     """
