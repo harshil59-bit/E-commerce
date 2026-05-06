@@ -13,6 +13,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - monitoring-net
 
@@ -28,10 +30,7 @@ services:
       - monitoring-net
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_BASE_URL: /api
+    image: soham170905/cartlabs-frontend:latest
     container_name: cartlabs-frontend
     networks:
       - monitoring-net
@@ -51,4 +50,7 @@ services:
 
 networks:
   monitoring-net:
-    external: true  
+    external: true
+
+volumes:
+  postgres_data:
