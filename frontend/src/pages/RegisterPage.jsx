@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
@@ -8,10 +8,13 @@ const getErrorMessage = (error, fallback) => error.response?.data?.detail || fal
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, isAuthenticated } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
-
+  // Redirect to products page if already authenticated
+  if (isAuthenticated) {
+    return <Navigate to="/products" replace />;
+  }
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
