@@ -51,4 +51,4 @@ services:
 
 networks:
   monitoring-net:
-    external: true
+    external: true  
